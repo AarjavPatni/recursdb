@@ -2,10 +2,28 @@ use std::net::{TcpListener, TcpStream};
 use std::io::{Read};
 
 fn client_handler(mut stream: TcpStream) {
-    let mut input: String = String::new();
+    let mut request: String = String::new();
 
-    stream.read_to_string(&mut input).unwrap().to_string();
-    println!("{input}");
+    stream.read_to_string(&mut request).unwrap().to_string();
+
+    request = request.lines().next().unwrap().to_string();
+    let request_type: String = request.split(' ').nth(1).unwrap()[1..4].to_string();
+
+    match request_type.as_str() {
+        "set" => {
+            todo!()
+        }
+
+        "get" => {
+            todo!()
+        }
+
+        _ => {
+            println!("Invalid request")
+        }
+    }
+
+    println!("{request_type}");
 }
 
 fn main() -> std::io::Result<()> {
