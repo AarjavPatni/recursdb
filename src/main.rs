@@ -21,7 +21,15 @@ fn client_handler(mut stream: TcpStream, data: &mut HashMap<String, String>) {
         }
 
         "get" => {
-            todo!()
+            let rest = request[5..].to_string();
+            let parts: Vec<&str> = rest.split('=').collect();
+            let key = parts[1].to_string();
+            let value = data.get(&key).unwrap();    // TODO: Handle non existent pairs
+
+            println!("{}", &value);
+
+            let response = format!("HTTP/1.1 200 OK\r\nContent-Length: {}\r\n\r\n{}", value.len(), value);
+            let _ = stream.write_all(response.as_bytes()).unwrap();
         }
 
         _ => {
