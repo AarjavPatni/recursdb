@@ -34,6 +34,7 @@ recursdb is a simple Rust-based in-memory key-value store that operates over a T
    The server responds with the value for `get` requests.
 
 ## Design Decisions
+
 - All data fits in memory; there is no limit on the number or size of key-value pairs (other than system memory).
 - There is a limit on the size of input in the URL query: each request can be up to 1024 bytes (1 KB).
 - Only one client connects at a time; concurrent connections are not supported.
@@ -45,7 +46,8 @@ recursdb is a simple Rust-based in-memory key-value store that operates over a T
 ## Roadmap
 
 - **Upcoming feature:** Store key-value pairs on the local file system for persistence.
-- **Future possible improvements:**
+- **Future improvements:**
+  - Add testable functions for unit tests.
   - Support for concurrent connections (multi-threading or async IO).
   - Additional commands and features.
   - Security and authentication.
