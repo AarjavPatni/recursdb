@@ -3,9 +3,10 @@ use std::net::{TcpListener, TcpStream};
 use std::io::{Read, Write};
 
 fn client_handler(mut stream: TcpStream, data: &mut HashMap<String, String>) {
-    let mut request: String = String::new();
+    let mut buffer = [0; 1024];
 
-    stream.read_to_string(&mut request).unwrap().to_string();
+    let request_size = stream.read(&mut buffer).unwrap();
+    let mut request = String::from_utf8_lossy(&buffer[..request_size]).to_string();
 
     request = request.lines().next().unwrap().split(' ').nth(1).unwrap().to_string();
     let request_type: String = request[1..4].to_string();
@@ -28,7 +29,7 @@ fn client_handler(mut stream: TcpStream, data: &mut HashMap<String, String>) {
 
             println!("{}", &value);
 
-            let response = format!("HTTP/1.1 200 OK\r\nContent-Length: {}\r\n\r\n{}", value.len(), value);
+            let response = format!("HTTP/1.1 200 OK\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{}", value.len(), value);
             let _ = stream.write_all(response.as_bytes()).unwrap();
         }
 
@@ -46,7 +47,6 @@ fn main() -> std::io::Result<()> {
 
     println!("Listening on localhost... 🦀 👀");
 
-    // TODO: Connections persist unless forced to terminate
     for stream in listener.incoming() {
         match stream {
             Ok(stream) => {
