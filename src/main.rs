@@ -2,6 +2,13 @@ use std::collections::HashMap;
 use std::net::{TcpListener, TcpStream};
 use std::io::{Read, Write};
 
+fn parse_request(request: &String) -> (String, String) {
+    let request_type: String = request[1..4].to_string();
+    let rest = request[5..].to_string();
+
+    (request_type, rest)
+}
+
 fn client_handler(mut stream: TcpStream, data: &mut HashMap<String, String>) {
     let mut buffer = [0; 1024];
 
@@ -9,11 +16,10 @@ fn client_handler(mut stream: TcpStream, data: &mut HashMap<String, String>) {
     let mut request = String::from_utf8_lossy(&buffer[..request_size]).to_string();
 
     request = request.lines().next().unwrap().split(' ').nth(1).unwrap().to_string();
-    let request_type: String = request[1..4].to_string();
+    let (request_type, rest) = parse_request(&request);
 
     match request_type.as_str() {
         "set" => {
-            let rest = request[5..].to_string();
             let parts: Vec<&str> = rest.split('=').collect();
             let key = parts[0].to_string();
             let value = parts[1].to_string();
@@ -22,7 +28,6 @@ fn client_handler(mut stream: TcpStream, data: &mut HashMap<String, String>) {
         }
 
         "get" => {
-            let rest = request[5..].to_string();
             let parts: Vec<&str> = rest.split('=').collect();
             let key = parts[1].to_string();
             let value = data.get(&key).unwrap();    // TODO: Handle non existent pairs
