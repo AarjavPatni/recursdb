@@ -33,10 +33,14 @@ recursdb is a simple Rust-based in-memory key-value store that operates over a T
 
    The server responds with the value for `get` requests.
 
-## Limitations
-- Data is **not persisted**; all data is lost when the server stops.
-- Only one connection is handled at a time (no concurrency).
-- No authentication or security features.
+## Design Decisions
+- All data fits in memory; there is no limit on the number or size of key-value pairs (other than system memory).
+- There is a limit on the size of input in the URL query: each request can be up to 1024 bytes (1 KB).
+- Only one client connects at a time; concurrent connections are not supported.
+- Keys and values are expected to be valid UTF-8 strings.
+- The protocol expects requests in the form of HTTP GET lines (e.g., `/set?somekey=somevalue` or `/get?key=somekey`).
+- No authentication or authorization is required; all clients are trusted.
+- The server is always started on port 4000 at `127.0.0.1:4000`.
 
 ## Roadmap
 
