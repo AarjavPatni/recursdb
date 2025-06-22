@@ -55,11 +55,9 @@ fn client_handler(mut stream: TcpStream, data: &mut HashMap<String, String>) -> 
             Err("Invalid request")
         }
     }
-
-    // println!("{request_type}");
 }
 
-fn main() -> std::io::Result<()> {
+fn main() {
     let listener = TcpListener::bind("127.0.0.1:4000").unwrap();
     let mut data: HashMap<String, String> = HashMap::new();
 
@@ -86,6 +84,4 @@ fn main() -> std::io::Result<()> {
             }
         }
     }
-
-    Ok(())
 }
